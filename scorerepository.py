@@ -1,25 +1,15 @@
-import json
-import os
 from datetime import date
+
+from network.api import Api
 from model import Score
 
-import requests
 
-
-class SportsRepository:
-    """Repository for getting various sports data."""
+class ScoreRepository:
+    """Repository for getting score data."""
     ERROR_MESSAGE = "Please export an environment variable X_RAPIDAPI_KEY."
 
-    def __init__(self):
-        api_key = os.getenv('X_RAPIDAPI_KEY')
-        if not api_key:
-            print(self.ERROR_MESSAGE)
-            quit(1)
-        self.HEADERS = {
-            'x-rapidapi-host': "api-basketball.p.rapidapi.com",
-            'x-rapidapi-key': api_key
-        }
-
+    def __init__(self, api_client: Api):
+        self.api_client = api_client
         current_year = date.today().strftime("%Y")
         next_year = str(int(current_year) + 1)
         self.SEASON = current_year + '-' + next_year
@@ -32,13 +22,8 @@ class SportsRepository:
             'season': self.SEASON,
             'team': team_id
         }
-        url = "https://api-basketball.p.rapidapi.com/games"
-        response = requests.get(url, headers=self.HEADERS, params=query_params)
-        response_json = json.loads(response.text)
 
-        if response.status_code != 200:
-            return Score(errors=response_json['errors'])
-
+        response_json = self.api_client.get('/games', query_params)
         # Only get the first game for now...
         game = response_json['response'][0]
 
