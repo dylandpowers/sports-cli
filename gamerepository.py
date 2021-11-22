@@ -1,10 +1,10 @@
 from datetime import date
 
 from network.api import Api
-from model import Score
+from model import Game, GameStatus
 
 
-class ScoreRepository:
+class GameRepository:
     """Repository for getting score data."""
     ERROR_MESSAGE = "Please export an environment variable X_RAPIDAPI_KEY."
 
@@ -14,7 +14,7 @@ class ScoreRepository:
         next_year = str(int(current_year) + 1)
         self.SEASON = current_year + '-' + next_year
 
-    def get_basketball_score(self, team_id):
+    def get_basketball_score(self, team_id) -> Game:
         """Gets basketball scores for the current day for a given team ID."""
         query_params = {
             'date': date.today().strftime("%Y-%m-%d"),
@@ -24,7 +24,11 @@ class ScoreRepository:
         }
 
         response_json = self.api_client.get('/games', query_params)
-        # Only get the first game for now...
+
+        games = response_json['response']
+        if not games:
+            return Game(game_status=GameStatus.NO_GAME)
+
         game = response_json['response'][0]
 
         home_name = game['teams']['home']['name']
@@ -32,4 +36,14 @@ class ScoreRepository:
         home_score = game['scores']['home']['total']
         away_score = game['scores']['away']['total']
 
-        return Score(home_name, away_name, home_score, away_score)
+        status = self.__status_from_response(game)
+        game_time = ''
+        if status == GameStatus.NOT_STARTED:
+            game_time = game['time']
+
+        return Game(status, home_name, away_name, home_score, away_score, game_time=game_time)
+
+    def __status_from_response(self, game) -> GameStatus:
+        status = game['status']['short']
+        if status == 'NS':
+            return GameStatus.NOT_STARTED

@@ -4,7 +4,7 @@ import os
 
 from network.api import Api
 from search.teamfinder import TeamFinder
-from scorerepository import ScoreRepository
+from gamerepository import GameRepository
 
 api_key = os.getenv('X_RAPIDAPI_KEY')
 if not api_key:
@@ -20,7 +20,7 @@ parser.add_argument('-i', '--id', help='Specify a team id.')
 args = parser.parse_args()
 
 api_client = Api(api_key)
-repository = ScoreRepository(api_client)
+repository = GameRepository(api_client)
 finder = TeamFinder(api_client)
 
 if args.score:
