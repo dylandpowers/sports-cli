@@ -28,5 +28,5 @@ class Game:
             return "No game today."
         if self.game_status == GameStatus.NOT_STARTED:
             return "%s\n%-30s%s" % (self.away_name, self.home_name, self.game_time)
-        return "%-30s%s\n%-30s%s" % \
-               (self.away_name, self.away_score, self.home_name, self.home_score)
+        return "%s\n%-30s%s\n%-30s%s" % \
+               (self.game_time, self.away_name, self.away_score, self.home_name, self.home_score)

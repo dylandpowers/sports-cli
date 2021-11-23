@@ -37,13 +37,16 @@ class GameRepository:
         away_score = game['scores']['away']['total']
 
         status = self.__status_from_response(game)
-        game_time = ''
         if status == GameStatus.NOT_STARTED:
             game_time = game['time']
+        else:
+            game_time = game['status']['long']
 
         return Game(status, home_name, away_name, home_score, away_score, game_time=game_time)
 
     def __status_from_response(self, game) -> GameStatus:
+        # TODO(dpowers): implement case for final
         status = game['status']['short']
         if status == 'NS':
             return GameStatus.NOT_STARTED
+        return GameStatus.IN_PROGRESS
