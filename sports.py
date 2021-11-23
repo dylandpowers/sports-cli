@@ -32,9 +32,13 @@ if args.score:
             exit(1)
         teams = load()
 
-        print(repository.get_basketball_score(teams.get_basketball()))
+        if teams.get_basketball():
+            print(repository.get_basketball_score(teams.get_basketball()))
     elif args.id:
         print(repository.get_basketball_score(args.id))
     else:
         team_id = finder.find(args.team)
+        if not team_id:
+            print('Could not find any team matching the given search term.')
+            quit(1)
         print(repository.get_basketball_score(team_id))
