@@ -5,7 +5,7 @@ from os.path import exists
 
 from network.api import Api
 from team import TEAMFILE_NAME
-from team.teamfileloader import load
+from team.teamfile import load, try_save_selection
 from team.teamfinder import TeamFinder
 from gamerepository import GameRepository
 
@@ -14,7 +14,7 @@ if not api_key:
     print('Please export an environment variable X_RAPIDAPI_KEY')
     quit(1)
 
-parser = argparse.ArgumentParser(description='A sports command line tool.')
+parser = argparse.ArgumentParser(description='A command line tool for fetching sports data.')
 
 parser.add_argument('-s', '--score', action='store_true', help='Fetch the score for a given team.')
 parser.add_argument('-t', '--team', help='Specify a team name.')
@@ -42,3 +42,4 @@ if args.score:
             print('Could not find any team matching the given search term.')
             quit(1)
         print(repository.get_basketball_score(team_id))
+        try_save_selection(team_id, 'basketball')

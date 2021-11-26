@@ -14,8 +14,9 @@ class GameRepository:
         next_year = str(int(current_year) + 1)
         self.SEASON = current_year + '-' + next_year
 
-    def get_basketball_score(self, team_id) -> Game:
+    def get_basketball_score(self, team_id: int) -> Game:
         """Gets basketball scores for the current day for a given team ID."""
+        # TODO(dpowers): support other time zones
         query_params = {
             'date': date.today().strftime("%Y-%m-%d"),
             'timezone': 'America/New_York',
@@ -39,14 +40,17 @@ class GameRepository:
         status = self.__status_from_response(game)
         if status == GameStatus.NOT_STARTED:
             game_time = game['time']
-        else:
+        elif status == GameStatus.IN_PROGRESS:
             game_time = game['status']['long']
+        else:
+            game_time = 'Final'
 
         return Game(status, home_name, away_name, home_score, away_score, game_time=game_time)
 
     def __status_from_response(self, game) -> GameStatus:
-        # TODO(dpowers): implement case for final
         status = game['status']['short']
         if status == 'NS':
             return GameStatus.NOT_STARTED
+        if status == 'FT':
+            return GameStatus.FINAL
         return GameStatus.IN_PROGRESS
