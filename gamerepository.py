@@ -11,16 +11,13 @@ class GameRepository:
 
     def __init__(self, api_client: Api):
         self.api_client = api_client
-        current_year = date.today().strftime("%Y")
-        next_year = str(int(current_year) + 1)
-        self.SEASON = current_year + '-' + next_year
 
     def get_basketball_score(self, team_id: int) -> Game:
         """Gets basketball scores for the current day for a given team ID."""
         query_params = {
             'date': date.today().strftime("%Y-%m-%d"),
             'timezone': tzlocal.get_localzone_name(),
-            'season': self.SEASON,
+            'season': '2021-2022',  # TODO(dpowers) dynamically generate this
             'team': team_id
         }
 
