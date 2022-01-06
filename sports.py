@@ -43,3 +43,6 @@ if args.score:
             quit(1)
         print(repository.get_basketball_score(team_id))
         try_save_selection(team_id, 'basketball')
+elif args.team or args.id:
+    print("Please specify -s to get scores.")
+    exit(1)

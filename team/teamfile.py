@@ -29,7 +29,8 @@ def load() -> Teams:
 def try_save_selection(team_id: int, sport: str):
     """Tries to save the selection under the given sport to the team file."""
     option = inquirer.Confirm('save',
-                              message='Would you like to save the current selection?',
+                              message='Would you like to save the current selection?\nThis will ' +
+                                      'overwrite any existing selection for this sport.',
                               default=True)
 
     answers = inquirer.prompt([option])

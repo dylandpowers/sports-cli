@@ -1,4 +1,5 @@
 from datetime import date
+import tzlocal
 
 from network.api import Api
 from model import Game, GameStatus
@@ -16,10 +17,9 @@ class GameRepository:
 
     def get_basketball_score(self, team_id: int) -> Game:
         """Gets basketball scores for the current day for a given team ID."""
-        # TODO(dpowers): support other time zones
         query_params = {
             'date': date.today().strftime("%Y-%m-%d"),
-            'timezone': 'America/New_York',
+            'timezone': tzlocal.get_localzone_name(),
             'season': self.SEASON,
             'team': team_id
         }
