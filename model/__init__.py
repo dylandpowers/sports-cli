@@ -10,12 +10,14 @@ class GameStatus(Enum):
 
 class Game:
     def __init__(self,
+                 date_arg,
                  game_status=GameStatus.NOT_STARTED,
                  home_name=None,
                  away_name=None,
                  home_score=None,
                  away_score=None,
                  game_time=None):
+        self.date_arg = date_arg
         self.game_status = game_status
         self.home_name = home_name
         self.away_name = away_name
@@ -25,7 +27,7 @@ class Game:
 
     def __repr__(self):
         if self.game_status == GameStatus.NO_GAME:
-            return "No game today."
+            return "No game on %s." % self.date_arg
         if self.game_status == GameStatus.NOT_STARTED:
             return "%s\n%-30s%s" % (self.away_name, self.home_name, self.game_time)
         return "%s\n%-30s%s\n%-30s%s" % \

@@ -12,10 +12,10 @@ class GameRepository:
     def __init__(self, api_client: Api):
         self.api_client = api_client
 
-    def get_basketball_score(self, team_id: int) -> Game:
+    def get_basketball_score(self, team_id: int, date_arg: str) -> Game:
         """Gets basketball scores for the current day for a given team ID."""
         query_params = {
-            'date': date.today().strftime("%Y-%m-%d"),
+            'date': date_arg,
             'timezone': tzlocal.get_localzone_name(),
             'season': '2021-2022',  # TODO(dpowers) dynamically generate this
             'team': team_id
@@ -25,7 +25,7 @@ class GameRepository:
 
         games = response_json['response']
         if not games:
-            return Game(game_status=GameStatus.NO_GAME)
+            return Game(date_arg, game_status=GameStatus.NO_GAME)
 
         game = response_json['response'][0]
 
@@ -42,7 +42,7 @@ class GameRepository:
         else:
             game_time = 'Final'
 
-        return Game(status, home_name, away_name, home_score, away_score, game_time=game_time)
+        return Game(date_arg, status, home_name, away_name, home_score, away_score, game_time=game_time)
 
     def __status_from_response(self, game) -> GameStatus:
         status = game['status']['short']
